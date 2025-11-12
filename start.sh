@@ -33,13 +33,24 @@ mkdir -p /var/www/html/database
 touch /var/www/html/database/database.sqlite
 chmod -R 775 /var/www/html/database
 
+# Ensure storage directories exist
+echo "📂 Setting up storage directories..."
+mkdir -p /var/www/html/storage/app/public
+mkdir -p /var/www/html/storage/framework/cache
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/logs
+mkdir -p /var/www/html/public/storage
+
 # Run database migrations
 echo "🔄 Running database migrations..."
 php artisan migrate --force --no-interaction || true
 
 # Create storage symlink
 echo "🔗 Creating storage symlink..."
+rm -rf /var/www/html/public/storage
 php artisan storage:link || true
+ls -la /var/www/html/public/storage
 
 # Clear all caches
 echo "🧹 Clearing caches..."
