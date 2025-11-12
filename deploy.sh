@@ -17,6 +17,13 @@ php artisan migrate --force --no-interaction
 echo "🔗 Creating storage symlink..."
 php artisan storage:link || true
 
+# Clear all caches first
+echo "🧹 Clearing caches..."
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+
 # Clear and cache configuration
 echo "⚡ Optimizing application..."
 php artisan config:cache
