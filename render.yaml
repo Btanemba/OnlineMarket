@@ -1,6 +1,35 @@
 services:
+  # Web Application with SQLite
   - type: web
-    name: laravel-app
+    name: onlinemarket-web
     env: docker
+    dockerfilePath: ./Dockerfile
     plan: free
     autoDeploy: true
+    healthCheckPath: /
+    buildCommand: ./deploy.sh
+    envVars:
+      - key: APP_NAME
+        value: OnlineMarket
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        sync: false
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://onlinemarket-web.onrender.com
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: CACHE_DRIVER
+        value: file
+      - key: FILESYSTEM_DISK
+        value: public
