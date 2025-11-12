@@ -25,6 +25,8 @@ services:
         value: error
       - key: DB_CONNECTION
         value: sqlite
+      - key: DB_DATABASE
+        value: /var/www/html/database/database.sqlite
       - key: SESSION_DRIVER
         value: file
       - key: QUEUE_CONNECTION

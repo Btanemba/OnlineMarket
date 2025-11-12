@@ -28,6 +28,9 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
+# Remove .env file to ensure environment variables from Render are used
+RUN rm -f .env
+
 # Install Composer (copy from official composer image)
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
