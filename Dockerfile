@@ -17,6 +17,7 @@ RUN apt-get update \
         libonig-dev \
         libxml2-dev \
         libzip-dev \
+        libsqlite3-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd zip \
     && rm -rf /var/lib/apt/lists/*
