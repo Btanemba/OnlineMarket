@@ -4,6 +4,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\CartController;
 
+// Debug route - remove after fixing
+Route::get('/debug-config', function() {
+    return [
+        'DB_CONNECTION' => env('DB_CONNECTION'),
+        'DB_DATABASE' => env('DB_DATABASE'),
+        'SESSION_DRIVER' => env('SESSION_DRIVER'),
+        'CACHE_DRIVER' => env('CACHE_DRIVER'),
+        'config_db_default' => config('database.default'),
+        'config_session_driver' => config('session.driver'),
+    ];
+});
+
 Route::get('/', [FrontendController::class, 'index'])->name('home');
 Route::get('/category/{id}', [FrontendController::class, 'category'])->name('category');
 Route::get('/product/{id}', [FrontendController::class, 'product'])->name('product');
