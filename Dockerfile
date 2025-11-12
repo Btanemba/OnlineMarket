@@ -51,8 +51,12 @@ RUN mkdir -p /var/www/html/database \
 RUN sed -ri 's!DocumentRoot /var/www/html!DocumentRoot /var/www/html/public!g' /etc/apache2/sites-available/*.conf \
     && sed -ri 's!<Directory /var/www/>\n\tOptions Indexes FollowSymLinks\n\tAllowOverride None!<Directory /var/www/>\n\tOptions Indexes FollowSymLinks\n\tAllowOverride All!g' /etc/apache2/apache2.conf || true
 
+# Copy and set permissions for startup script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Expose the default HTTP port
 EXPOSE 80
 
-# Start Apache in foreground
-CMD ["apache2-foreground"]
+# Use startup script instead of apache2-foreground directly
+CMD ["/usr/local/bin/start.sh"]

@@ -7,7 +7,6 @@ services:
     plan: free
     autoDeploy: true
     healthCheckPath: /
-    buildCommand: ./deploy.sh
     envVars:
       - key: APP_NAME
         value: OnlineMarket
