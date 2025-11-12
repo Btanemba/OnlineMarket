@@ -3,6 +3,30 @@ set -e
 
 echo "🚀 Starting deployment..."
 
+# Create .env file from environment variables
+echo "📝 Creating .env file from environment variables..."
+cat > /var/www/html/.env << EOF
+APP_NAME="${APP_NAME:-Laravel}"
+APP_ENV="${APP_ENV:-production}"
+APP_KEY="${APP_KEY}"
+APP_DEBUG="${APP_DEBUG:-false}"
+APP_URL="${APP_URL}"
+
+LOG_CHANNEL="${LOG_CHANNEL:-stack}"
+LOG_LEVEL="${LOG_LEVEL:-error}"
+
+DB_CONNECTION="${DB_CONNECTION:-sqlite}"
+DB_DATABASE="${DB_DATABASE:-/var/www/html/database/database.sqlite}"
+
+SESSION_DRIVER="${SESSION_DRIVER:-file}"
+SESSION_LIFETIME=120
+
+CACHE_DRIVER="${CACHE_DRIVER:-file}"
+QUEUE_CONNECTION="${QUEUE_CONNECTION:-sync}"
+
+FILESYSTEM_DISK="${FILESYSTEM_DISK:-public}"
+EOF
+
 # Ensure database directory exists
 echo "📁 Setting up database directory..."
 mkdir -p /var/www/html/database
