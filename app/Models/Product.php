@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Backpack\CRUD\app\Models\Traits\HasUploadFields;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use CrudTrait;
-     use HasFactory;
+    use CrudTrait, HasFactory, HasUploadFields;
+
     protected $fillable = [
         'name',
         'description',
@@ -19,6 +20,7 @@ class Product extends Model
         'images',
         'created_by',
         'updated_by',
+        'deleted_by',
     ];
 
     protected $casts = [
@@ -26,48 +28,37 @@ class Product extends Model
         'price' => 'decimal:2',
     ];
 
-    /**
-     * Get the category that owns the product.
-     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    protected static function booted()
+    {
+        static::creating(function ($product) {
+            if (backpack_auth()->check()) {
+                $product->created_by = backpack_auth()->id();
+            }
+        });
 
-     protected static function booted()
-{
-    static::creating(function ($product) {
-        if (backpack_auth()->check()) {
-            $product->created_by = backpack_auth()->id();
-           
-        }
-    });
+        static::updating(function ($product) {
+            if (backpack_auth()->check()) {
+                $product->updated_by = backpack_auth()->id();
+            }
+        });
 
-    static::updating(function ($product) {
-        if (backpack_auth()->check()) {
-            $product->updated_by = backpack_auth()->id();
-        }
-    });
+        static::deleting(function ($product) { // <-- FIXED HERE
+            if (backpack_auth()->check()) {
+                $product->deleted_by = backpack_auth()->id();
+            }
+        });
+    }
 
-    static::deleting(function ($category) {
-        if (backpack_auth()->check()) {
-            $category->deleted_by = backpack_auth()->id();
-        }
-    });
-}
-
-    /**
-     * Get the user who created the product.
-     */
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Get the user who last updated the product.
-     */
     public function updater()
     {
         return $this->belongsTo(User::class, 'updated_by');
@@ -75,10 +66,15 @@ class Product extends Model
 
     public function setImagesAttribute($value)
     {
-        $attribute_name = "images";
-        $disk = "public";
-        $destination_path = "uploads/products";
+        $this->uploadMultipleFilesToDisk($value, 'images', 'public', 'products');
+    }
 
-        $this->uploadMultipleFilesToDisk($value, $attribute_name, $disk, $destination_path);
+    public function getImagesAttribute($value)
+    {
+        $images = json_decode($value, true) ?? [];
+
+        return array_map(function ($item) {
+            return is_array($item) ? ($item['path'] ?? '') : $item;
+        }, $images);
     }
 }
